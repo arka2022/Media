@@ -1,5 +1,7 @@
 import json
 from mutagen.mp4 import MP4
+from tinytag import TinyTag
+
 
 
 #location of json file
@@ -15,7 +17,7 @@ with open(json_source) as f:
 
 
 #function to add metadata in video
-def addTagsToVideo(video_source1,metadata_source1):
+def setMetaDataToVideo(video_source1,metadata_source1):
     try:
       video = MP4(video_source1)
     except:
@@ -29,5 +31,16 @@ def addTagsToVideo(video_source1,metadata_source1):
         print('Error in json/file not found')
 
 
-#calling function
-addTagsToVideo(video_source,data)
+#calling functionx
+setMetaDataToVideo(video_source,data)
+
+def getMetaDataFromVideo(video_source):
+    video = MP4(video_source)
+    print(video.pprint())
+    # video = TinyTag.get(video_source)
+    # print(video)
+    # print(video.duration)
+
+getMetaDataFromVideo(video_source)
+
+
