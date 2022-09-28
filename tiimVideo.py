@@ -3,7 +3,7 @@ from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 vid=VideoFileClip('video1.mp4')
 
-def cropVideo(source,destination,start_time,end_time,metadata):
+def cropVideo(source,destination,start_time,end_time):
   ffmpeg_extract_subclip(source, start_time, end_time, targetname=destination)
 
 source="video1.mp4"
@@ -14,4 +14,4 @@ start_time=1 #min
 end_time=1.1  #min
 metadata=0
 
-cropVideo(source,destination,start_time,end_time,metadata)
+cropVideo(source,destination,start_time,end_time)
