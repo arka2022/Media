@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+celery
+flower
+httpx
+boto3
+aiofiles
+python-multipart
