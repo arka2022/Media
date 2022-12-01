@@ -19,6 +19,7 @@ def downloadVideoFromS3(test_video_file):
 def adaptiveScreenDetection(test_video_file):
     try:
         video_path = test_video_file
+        print(video_path, test_video_file)
         video_stream = open_video(video_path, backend="pyav")
         video_manager = VideoManager([video_path])
         stats_manager = StatsManager()
@@ -53,6 +54,28 @@ def adaptiveScreenDetection(test_video_file):
     except Exception as e:
         print(e)
         print("Exception raises on adaptiveScreenDetection")
+def contentdetSceneSetection(test_video_file):
+    video_path = test_video_file
+    print(video_path,test_video_file)
+    video_manager = VideoManager([video_path])
+    try:
+        stats_manager = StatsManager()
+        scene_manager = SceneManager(stats_manager)
+        scene_manager.add_detector(ContentDetector(threshold=30))
+        video_manager.set_downscale_factor()
+        video_manager.start()
+        scene_manager.detect_scenes(frame_source=video_manager)
+        scene_list = scene_manager.get_scene_list()
+        print(f'{len(scene_list)} scenes detected!')
+        list = []
+        for scene in scene_list:
+            start, end = scene
+            list.append(int(start.get_seconds()))
+        return list
+    except Exception as e:
+        print(e)
+    finally:
+        video_manager.release()
 def thresholdSceneDetection(test_video_file):
     try:
         video_path = test_video_file
@@ -61,7 +84,7 @@ def thresholdSceneDetection(test_video_file):
         video_manager = VideoManager([video_path])
         # Construct our SceneManager and pass it our StatsManager.
         scene_manager = SceneManager(stats_manager)
-        # Add Thresholddetector algorithm (each detector's constructor
+        # Add ContentDetector algorithm (each detector's constructor
         # takes various options, e.g. threshold).
         detector = ThresholdDetector(
             threshold=3,
@@ -80,27 +103,9 @@ def thresholdSceneDetection(test_video_file):
         for scene in scene_list:
             start, end = scene
             list.append(int(start.get_seconds()))
-        return list
-    except Exception as e:
-        print(e)
-    finally:
-        video_manager.release()
-def contentdetSceneSetection(test_video_file):
-    video_path = test_video_file
-    video_manager = VideoManager([video_path])
-    try:
-        stats_manager = StatsManager()
-        scene_manager = SceneManager(stats_manager)
-        scene_manager.add_detector(ContentDetector(threshold=30))
-        video_manager.set_downscale_factor()
-        video_manager.start()
-        scene_manager.detect_scenes(frame_source=video_manager)
-        scene_list = scene_manager.get_scene_list()
-        print(f'{len(scene_list)} scenes detected!')
-        list = []
-        for scene in scene_list:
-            start, end = scene
-            list.append(int(start.get_seconds()))
+        #if list is null return 1
+        if list==[]:
+            list.append(1)
         return list
     except Exception as e:
         print(e)
@@ -156,6 +161,21 @@ def createJson_adaptive(vid_src, img_dest):
     except Exception as e:
         print(e)
         print("Exception raises on CreateJson")
-
+def createJson_content(vid_src, img_dest):
+    try:
+        start_time_list = contentdetSceneSetection(os.getcwd() + os.sep + vid_src)
+        processed_data = []
+        for i in start_time_list:
+            startTime = i
+            imgUrl = ExtractImages(vid_src, img_dest, i)
+            obj = {
+                "start": startTime,
+                "imageURL": f"{cloud_front}{s3_bucket_name}/{imgUrl}"
+            }
+            processed_data.append(obj)
+        return JSONResponse(processed_data)
+    except Exception as e:
+        print(e)
+        print("Exception raises on CreateJson")
 
 
