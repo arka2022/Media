@@ -177,5 +177,21 @@ def createJson_content(vid_src, img_dest):
     except Exception as e:
         print(e)
         print("Exception raises on CreateJson")
+def createJson_threshold(vid_src, img_dest):
+    try:
+        start_time_list = thresholdSceneDetection(os.getcwd() + os.sep + vid_src)
+        processed_data = []
+        for i in start_time_list:
+            startTime = i
+            imgUrl = ExtractImages(vid_src, img_dest, i)
+            obj = {
+                "start": startTime,
+                "imageURL": f"{cloud_front}{s3_bucket_name}/{imgUrl}"
+            }
+            processed_data.append(obj)
+        return JSONResponse(processed_data)
+    except Exception as e:
+        print(e)
+        print("Exception raises on CreateJson")
 
 
