@@ -16,7 +16,6 @@ from utils.constants import *
 
 def downloadVideoFromS3(test_video_file):
     download_file_from_s3(test_video_file, os.getcwd())
-
 def adaptiveScreenDetection(test_video_file):
     try:
         video_path = test_video_file
@@ -62,7 +61,7 @@ def thresholdSceneDetection(test_video_file):
         video_manager = VideoManager([video_path])
         # Construct our SceneManager and pass it our StatsManager.
         scene_manager = SceneManager(stats_manager)
-        # Add ContentDetector algorithm (each detector's constructor
+        # Add Thresholddetector algorithm (each detector's constructor
         # takes various options, e.g. threshold).
         detector = ThresholdDetector(
             threshold=3,
@@ -141,7 +140,7 @@ def ExtractImages(vid_src, img_dest, time):
     except Exception as e:
         print(e)
         print("exception raises from ExtractImages")
-def createJson(vid_src, img_dest):
+def createJson_adaptive(vid_src, img_dest):
     try:
         start_time_list = adaptiveScreenDetection(os.getcwd() + os.sep + vid_src)
         processed_data = []
@@ -153,14 +152,10 @@ def createJson(vid_src, img_dest):
                 "imageURL": f"{cloud_front}{s3_bucket_name}/{imgUrl}"
             }
             processed_data.append(obj)
-        # write processed data into json
-        # with open(jsonFile, 'w') as f:
-        #     json.dump(processed_data, f)
-        #     upload_file_to_s3(img_dest, jsonFile)
-        # return as  a json object
         return JSONResponse(processed_data)
     except Exception as e:
         print(e)
         print("Exception raises on CreateJson")
+
 
 
