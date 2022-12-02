@@ -50,6 +50,9 @@ def adaptiveScreenDetection(test_video_file):
             # your code
             # print(f'{start.get_seconds()} - {end.get_seconds()}')
             list.append(int(start.get_seconds()))
+        # if list is null return 1
+        if list == []:
+             list.append(1)
         return list
     except Exception as e:
         print(e)
@@ -71,6 +74,9 @@ def contentdetSceneSetection(test_video_file):
         for scene in scene_list:
             start, end = scene
             list.append(int(start.get_seconds()))
+        # if list is null return 1
+        if list == []:
+            list.append(1)
         return list
     except Exception as e:
         print(e)
